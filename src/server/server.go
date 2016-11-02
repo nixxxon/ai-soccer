@@ -5,6 +5,7 @@ import "fmt"
 //import "bufio"
 //import "strings" // only needed below for sample processing
 import "./network"
+// import "server/game"
 
 func main() {
 
@@ -21,6 +22,11 @@ func main() {
 
     go network.RunGame(conn1, conn2, 0)
 
+
+    // game := Game{[
+    //     Player{Position{1, 1}}
+    // ]}
+    // fmt.Print(game)
 
     // run loop forever (or until ctrl-c)
     i := 0
