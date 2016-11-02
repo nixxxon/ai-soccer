@@ -5,7 +5,7 @@ import "fmt"
 //import "bufio"
 //import "strings" // only needed below for sample processing
 import "./network"
-// import "server/game"
+import "./game"
 
 func main() {
 
@@ -20,13 +20,11 @@ func main() {
     conn2 := network.NewConnection("Welcome player 2! ", ln)
     fmt.Println("Two players joined")
 
-    go network.RunGame(conn1, conn2, 0)
+    onlyGame := game.CreateGame()
 
+    go network.RunGame(conn1, conn2, onlyGame)
 
-    // game := Game{[
-    //     Player{Position{1, 1}}
-    // ]}
-    // fmt.Print(game)
+    fmt.Print(onlyGame)
 
     // run loop forever (or until ctrl-c)
     i := 0

@@ -1,11 +1,11 @@
 package game
 
 type Position struct {
-    x int
-    y int
+    X int
+    Y int
 }
 
 type Player struct {
-    position Position
+    Position Position
 }
 
