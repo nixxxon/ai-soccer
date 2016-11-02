@@ -14,6 +14,9 @@ func main() {
 
     // accept connection on port
     conn, _ := ln.Accept()
+    conn.Write([]byte("Welcome player 1!\n"))
+    conn2, _ := ln.Accept()
+    conn2.Write([]byte("Welcome player 2!\n"))
 
     // run loop forever (or until ctrl-c)
     for {
@@ -25,5 +28,6 @@ func main() {
         newmessage := strings.ToUpper(message)
         // send new string back to client
         conn.Write([]byte(newmessage + "\n"))
+        conn2.Write([]byte(newmessage + "\n"))
     }
 }
