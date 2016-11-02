@@ -2,8 +2,9 @@ package main
 
 import "net"
 import "fmt"
-import "bufio"
-import "strings" // only needed below for sample processing
+//import "bufio"
+//import "strings" // only needed below for sample processing
+import "./network"
 
 func main() {
 
@@ -12,22 +13,29 @@ func main() {
     // listen on all interfaces
     ln, _ := net.Listen("tcp", ":8081")
 
-    // accept connection on port
-    conn, _ := ln.Accept()
-    conn.Write([]byte("Welcome player 1!\n"))
-    conn2, _ := ln.Accept()
-    conn2.Write([]byte("Welcome player 2!\n"))
+    conn1 := network.NewConnection("Welcome player 1! ", ln)
+    fmt.Println("One player joined")
+
+    conn2 := network.NewConnection("Welcome player 2! ", ln)
+    fmt.Println("Two players joined")
+
+    go network.RunGame(conn1, conn2, 0)
+
 
     // run loop forever (or until ctrl-c)
-    for {
+    i := 0
+    for i < 100{
         // will listen for message to process ending in newline (\n)
-        message, _ := bufio.NewReader(conn).ReadString('\n')
+        //message, _ := bufio.NewReader(conn1).ReadString('\n')
         // output message received
-        fmt.Print("Message Received:", string(message))
+        //fmt.Print("Message Received:", string(message))
         // sample process for string received
-        newmessage := strings.ToUpper(message)
+        // newmessage := strings.ToUpper(message)
+
+        //conn1.SendState(i)
+
         // send new string back to client
-        conn.Write([]byte(newmessage + "\n"))
-        conn2.Write([]byte(newmessage + "\n"))
+        // conn1.Write([]byte(newmessage + "\n"))
+        // conn2.Write([]byte(newmessage + "\n"))
     }
 }
