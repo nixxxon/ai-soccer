@@ -5,11 +5,16 @@ import "fmt"
 //import "bufio"
 //import "strings" // only needed below for sample processing
 import "./network"
-import "./game"
+import (
+    "./game"
+)
 
 func main() {
 
     fmt.Println("Launching server...")
+
+    emptyGame := game.CreateGame()
+    go network.RunGame(network.EmptyConnection(), network.EmptyConnection(), emptyGame)
 
     // listen on all interfaces
     ln, _ := net.Listen("tcp", ":8081")
@@ -20,11 +25,10 @@ func main() {
     conn2 := network.NewConnection("Welcome player 2! ", ln)
     fmt.Println("Two players joined")
 
-    onlyGame := game.CreateGame()
+    networkGame := game.CreateGame()
+    go network.RunGame(conn1, conn2, networkGame)
 
-    go network.RunGame(conn1, conn2, onlyGame)
-
-    fmt.Print(onlyGame)
+    fmt.Print(networkGame)
 
     // run loop forever (or until ctrl-c)
     i := 0

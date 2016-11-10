@@ -1,6 +1,9 @@
 package game
 
-import "fmt"
+import (
+    "fmt"
+    "strconv"
+)
 
 type Game struct {
     Players []Player
@@ -14,7 +17,8 @@ func CreateGame() Game {
     return game
 }
 
-func (this Game) Tick() {
-    fmt.Print(this.Frame+"\n")
+func (this *Game) Tick() {
+    printableState := strconv.Itoa(this.Frame)
+    fmt.Print(printableState + "\n")
     this.Frame = this.Frame + 1
 }

@@ -12,6 +12,12 @@ type Connection struct {
 	command string
 }
 
+func EmptyConnection() Connection {
+	fmt.Print("Empty connection created")
+	connection := Connection{nil, ""}
+	return connection
+}
+
 func NewConnection(greeting string, listener net.Listener) Connection {
 	fmt.Print("Awaiting connections:")
 	conn, _ := listener.Accept()
@@ -23,6 +29,9 @@ func NewConnection(greeting string, listener net.Listener) Connection {
 }
 
 func (connection Connection) SendState(tick int) {
+	if(connection.conn == nil) {
+		return;
+	}
 	connection.conn.Write([]byte("Tick "+ strconv.Itoa(tick) +"\n"))
 }
 
