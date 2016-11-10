@@ -14,8 +14,9 @@ func RunGame(ai1 Connection, ai2 Connection, game game.Game) {
 	coreographer := Coreographer{ai1, ai2, game, ai1}
 
 	for {
+		coreographer.game.Tick(ai1.commands)
 		coreographer.postState()
-		coreographer.game.Tick()
+
 		time.Sleep(100 * time.Millisecond)
 	}
 }

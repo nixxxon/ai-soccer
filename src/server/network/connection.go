@@ -5,16 +5,19 @@ import (
 	"fmt"
 	"strconv"
 	"bufio"
+	"./../game"
+	"encoding/json"
 )
 
 type Connection struct {
 	conn net.Conn
-	command string
+	commands []game.PawnCommand
 }
 
 func EmptyConnection() Connection {
 	fmt.Print("Empty connection created")
-	connection := Connection{nil, ""}
+	connection := Connection{nil, []game.PawnCommand{}}
+	connection.commands = append(connection.commands, game.MoveCommand{Direction:0.5})
 	return connection
 }
 
@@ -23,7 +26,7 @@ func NewConnection(greeting string, listener net.Listener) Connection {
 	conn, _ := listener.Accept()
 	conn.Write([]byte(greeting+"\n"))
 	fmt.Print("Found connection")
-	connection := Connection{conn, ""}
+	connection := Connection{conn, []game.PawnCommand{}}
 	go listenToConnection(connection)
 	return connection
 }
@@ -38,7 +41,7 @@ func (connection Connection) SendState(tick int) {
 func listenToConnection(conn Connection) {
 	for {
 		message, _ := bufio.NewReader(conn.conn).ReadString('\n')
-		conn.command = message
+		json.Unmarshal([]byte(message), conn.commands);
 	}
 
 }

@@ -5,7 +5,7 @@ type Position struct {
     Y int
 }
 
-type Player struct {
+type Pawn struct {
     Position Position
 }
 

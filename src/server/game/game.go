@@ -2,23 +2,29 @@ package game
 
 import (
     "fmt"
-    "strconv"
+    "encoding/json"
 )
 
 type Game struct {
-    Players []Player
+    Pawns []Pawn    `json:"doods"`
     Frame int
 }
 
 func CreateGame() Game {
-    players := []Player{Player{Position{1, 1}}, Player{Position{3, 3}}}
+    players := []Pawn{Pawn{Position{1, 1}}, Pawn{Position{3, 3}}}
 
     game := Game{players, 15000}
     return game
 }
 
-func (this *Game) Tick() {
-    printableState := strconv.Itoa(this.Frame)
-    fmt.Print(printableState + "\n")
+func (this *Game) Tick(commands []PawnCommand) {
+    printableState := string(this.ToJsonState())//strconv.Itoa(this.Frame)
+    fmt.Print(printableState + "\n\n")
     this.Frame = this.Frame + 1
+    this.Pawns[0].Position.X = this.Pawns[0].Position.X + 2
+}
+
+func (this *Game) ToJsonState() []byte {
+    jsonState, _ := json.Marshal(this)
+    return jsonState
 }
