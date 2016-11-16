@@ -9,8 +9,11 @@ import "golang.org/x/net/websocket"
 import (
     "path/filepath"
     //"./network"
-    //"./game"
+    "./game"
+    "./network"
     "time"
+    "encoding/json"
+    "strconv"
 )
 //import "bufio"
 //import "strings" // only needed below for sample processing
@@ -30,6 +33,9 @@ import (
 //     websocket.Message.Send(ws, in)
 // }
 
+var connections []network.Connection
+//var awaitingSpectators []network.Connection
+var coreographers []network.Coreographer
 
 func main() {
     dir, err := filepath.Abs(filepath.Dir(os.Args[0]))
@@ -90,15 +96,58 @@ func main() {
 }
 
 func webHandler(ws *websocket.Conn) {
-    var in []byte
-    if err := websocket.Message.Receive(ws, &in); err != nil {
+    connection := network.NewConnection(ws)
+
+    var firstMessage []byte
+    if err := websocket.Message.Receive(ws, &firstMessage); err != nil {
         return
     }
-    fmt.Printf("Received: %s\n", string(in))
 
-    fmt.Printf("Second message: %s\n", string(in))
-    websocket.Message.Send(ws, in)
-    bombard(ws)
+    fmt.Println(string(firstMessage))
+    handshake := network.Handshake{}
+    json.Unmarshal(firstMessage, &handshake)
+
+    if(handshake.Role == "spectator") {
+        delegateNewSpectator(connection, handshake.GameId)
+    } else {
+        delegateNewConnection(connection)
+    }
+
+    connection.Listen()
+}
+func delegateNewSpectator(connection network.Connection, requestedGameId int) {
+    fmt.Println("Welcome spectator!")
+    for _, coreographer := range coreographers {
+        if( coreographer.Game.Id == requestedGameId ) {
+            coreographer.AddSpectator(connection)
+            fmt.Println("Spectating game "+string(requestedGameId))
+            return
+        }
+        fmt.Println("Searching")
+    }
+    fmt.Println("game "+strconv.Itoa(requestedGameId)+" not found")
+    connection.Disconnect()
+}
+
+func delegateNewConnection(connection network.Connection) {
+    fmt.Println("Welcome Player!")
+    connections = append(connections, connection)
+    if (len(connections) >= 2) {
+        startNewGame()
+    }
+}
+
+func startNewGame() {
+    networkGame := game.CreateGame()
+
+    conn1 := connections[0]
+    conn2 := connections[1]
+    connections = connections[2:]
+
+    coreographer := network.Coreographer{conn1, conn2, networkGame, nil}
+    coreographers = append(coreographers, coreographer)
+    coreographer.Run()
+    //go network.RunGame(connections[0], connections[1], networkGame)
 }
 
 func bombard(ws *websocket.Conn) {

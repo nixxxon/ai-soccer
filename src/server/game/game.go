@@ -8,18 +8,20 @@ import (
 type Game struct {
     Pawns []Pawn    `json:"doods"`
     Frame int
+    Id    int
 }
 
 func CreateGame() Game {
     players := []Pawn{Pawn{Position{1, 1}}, Pawn{Position{3, 3}}}
 
-    game := Game{players, 15000}
+    game := Game{players, 15000, 55}
     return game
 }
 
 func (this *Game) Tick(commands []PawnCommand) {
-    printableState := string(this.ToJsonState())//strconv.Itoa(this.Frame)
-    fmt.Print(printableState + "\n\n")
+    //printableState := string(this.ToJsonState())//strconv.Itoa(this.Frame)
+    //fmt.Print(printableState + "\n\n")
+    fmt.Print("|")
     this.Frame = this.Frame + 1
     this.Pawns[0].Position.X = this.Pawns[0].Position.X + 2
 }

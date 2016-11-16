@@ -21,7 +21,10 @@
 
                 ws.onopen = function() {
                     // Web Socket is connected, send data using send()
-                    ws.send("Message to send");
+                    ws.send(JSON.stringify({
+                        role : "spectator",
+                        game_id : 55
+                    }));
                     alert("Message is sent...");
                 };
 
