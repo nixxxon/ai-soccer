@@ -17,7 +17,7 @@
                     return;
                 }
 
-                var ws = new WebSocket('ws://localhost:3000');
+                var ws = new WebSocket('ws://localhost:3000/lobby');
 
                 ws.onopen = function() {
                     // Web Socket is connected, send data using send()
@@ -28,6 +28,7 @@
                 ws.onmessage = function (evt) {
                     var received_msg = evt.data;
                     console.log(received_msg);
+                    ws.send("Ping back");
                     return false;
                 };
 
