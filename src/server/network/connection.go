@@ -10,28 +10,37 @@ import (
 	"time"
 )
 
+type Connection interface {
+	SendState(tick int)
+	Disconnect()
+	Listen()
+	GetCommands() ([]game.PawnCommand)
+}
 
-
-type Connection struct {
+type PlayerConnection struct {
 	conn *websocket.Conn
 	commands []game.PawnCommand
 }
 
-func MakeDummyConnection() Connection {
+type EmptyConnection struct {
+
+}
+
+func MakeEmptyConnection() Connection {
 	fmt.Print("Empty connection created")
-	connection := Connection{nil, []game.PawnCommand{}}
-	connection.commands = append(connection.commands, game.MoveCommand{Direction:0.5})
+	connection := EmptyConnection{}
+	//connection.commands = append(connection.commands, game.MoveCommand{Direction:0.5})
 	return connection
 }
 
 func NewConnection(websocket *websocket.Conn) Connection {
 	fmt.Print("Found connection")
-	connection := Connection{websocket, []game.PawnCommand{}}
+	connection := PlayerConnection{websocket, []game.PawnCommand{}}
 	//connection.Listen()
 	return connection
 }
 
-func (connection Connection) SendState(tick int) {
+func (connection PlayerConnection) SendState(tick int) {
 	connection.conn.Write([]byte("Tick "+ strconv.Itoa(tick) +"\n"))
 }
 
@@ -42,7 +51,7 @@ func (connection Connection) SendState(tick int) {
 //	}
 //}
 
-func (this Connection) Listen() {
+func (this PlayerConnection) Listen() {
 	var in []byte
 	for {
 		websocket.Message.Send(this.conn, "Na")
@@ -60,11 +69,27 @@ func (this Connection) Listen() {
 	}
 }
 
-func (this Connection) onDisconnect() {
+func (this PlayerConnection) onDisconnect() {
 	fmt.Printf("Disconnect!!! BOOOM")
 	// TODO remove connection from list
 }
 
-func (this Connection) Disconnect() {
+func (this PlayerConnection) Disconnect() {
 	this.conn.Close()
+}
+
+func (this PlayerConnection) GetCommands() ([]game.PawnCommand) {
+	return this.commands
+}
+
+
+
+func (this EmptyConnection) Listen() {}
+
+func (this EmptyConnection) SendState(tick int) {}
+
+func (this EmptyConnection) Disconnect() {}
+
+func (this EmptyConnection) GetCommands() ([]game.PawnCommand) {
+	return []game.PawnCommand{}
 }

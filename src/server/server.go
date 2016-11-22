@@ -43,6 +43,8 @@ func main() {
         log.Fatal(err)
     }
 
+    startDummyGame()
+
     fmt.Println("Launching servers..." + (filepath.Join(dir, "static")))
 
     fmt.Println("Launching servers...")
@@ -93,6 +95,14 @@ func main() {
         // conn1.Write([]byte(newmessage + "\n"))
         // conn2.Write([]byte(newmessage + "\n"))
     }
+}
+
+func startDummyGame() {
+    fmt.Println("Starting dummy game")
+    conn1 := network.MakeEmptyConnection()
+    conn2 := network.MakeEmptyConnection()
+    delegateNewConnection(conn1)
+    delegateNewConnection(conn2)
 }
 
 func webHandler(ws *websocket.Conn) {
@@ -146,7 +156,7 @@ func startNewGame() {
 
     coreographer := network.Coreographer{conn1, conn2, networkGame, nil}
     coreographers = append(coreographers, coreographer)
-    coreographer.Run()
+    go coreographer.Run()
     //go network.RunGame(connections[0], connections[1], networkGame)
 }
 
