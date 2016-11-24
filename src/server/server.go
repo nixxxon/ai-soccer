@@ -35,7 +35,7 @@ import (
 
 var connections []network.Connection
 //var awaitingSpectators []network.Connection
-var coreographers []network.Coreographer
+var coreographers []*network.Coreographer
 
 func main() {
     dir, err := filepath.Abs(filepath.Dir(os.Args[0]))
@@ -130,7 +130,9 @@ func delegateNewSpectator(connection network.Connection, requestedGameId int) {
     for _, coreographer := range coreographers {
         if( coreographer.Game.Id == requestedGameId ) {
             coreographer.AddSpectator(connection)
-            fmt.Println("Spectating game "+string(requestedGameId))
+            fmt.Println("Spectating game "+strconv.Itoa(requestedGameId))
+            //go coreographer.Run()
+            //go coreographer.Run()
             return
         }
         fmt.Println("Searching")
@@ -155,8 +157,9 @@ func startNewGame() {
     connections = connections[2:]
 
     coreographer := network.Coreographer{conn1, conn2, networkGame, nil}
-    coreographers = append(coreographers, coreographer)
     go coreographer.Run()
+
+    coreographers = append(coreographers, &coreographer)
     //go network.RunGame(connections[0], connections[1], networkGame)
 }
 

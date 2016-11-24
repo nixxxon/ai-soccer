@@ -2,7 +2,6 @@ package network
 
 import (
 	"fmt"
-	"strconv"
 	"bufio"
 	"./../game"
 	"encoding/json"
@@ -11,7 +10,7 @@ import (
 )
 
 type Connection interface {
-	SendState(tick int)
+	SendState([]byte)
 	Disconnect()
 	Listen()
 	GetCommands() ([]game.PawnCommand)
@@ -40,8 +39,10 @@ func NewConnection(websocket *websocket.Conn) Connection {
 	return connection
 }
 
-func (connection PlayerConnection) SendState(tick int) {
-	connection.conn.Write([]byte("Tick "+ strconv.Itoa(tick) +"\n"))
+func (connection PlayerConnection) SendState(state []byte) {
+	connection.conn.Write(state)
+	fmt.Printf(string(state))
+	fmt.Printf("DDSA")
 }
 
 //func listenToConnection(conn Connection) {
@@ -86,7 +87,7 @@ func (this PlayerConnection) GetCommands() ([]game.PawnCommand) {
 
 func (this EmptyConnection) Listen() {}
 
-func (this EmptyConnection) SendState(tick int) {}
+func (this EmptyConnection) SendState(state []byte) {}
 
 func (this EmptyConnection) Disconnect() {}
 

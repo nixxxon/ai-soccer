@@ -30,3 +30,14 @@ func (this *Game) ToJsonState() []byte {
     jsonState, _ := json.Marshal(this)
     return jsonState
 }
+
+func (this *Game) MirrorCopy() *Game {
+    mirrorPawns := []Pawn{}
+    for _, pawn := range this.Pawns {
+        mirrorPos := Position{-pawn.Position.X, -pawn.Position.Y}
+        mirrorPawn := Pawn{mirrorPos}
+        mirrorPawns = append([]Pawn{mirrorPawn}, mirrorPawns...)
+    }
+
+    return &Game{mirrorPawns, this.Frame, this.Id}
+}
