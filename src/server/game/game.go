@@ -40,7 +40,7 @@ func (this *Game) Tick(commands []PawnCommand) {
 	this.Pawns[0].Position.X = this.Pawns[0].Position.X + 2
 
 	for _, command := range commands {
-		command.ApplyTo(&this.Pawns[command.GetPawnId()])
+		command.ApplyTo(this)
 	}
 }
 
