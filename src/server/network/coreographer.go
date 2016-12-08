@@ -2,7 +2,7 @@ package network
 
 import "time"
 import (
-	"./../game"
+	"server/game"
 	"fmt"
 	"strconv"
 )

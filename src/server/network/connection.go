@@ -3,7 +3,7 @@ package network
 import (
 	"fmt"
 	"bufio"
-	"./../game"
+	"server/game"
 	"encoding/json"
 	"golang.org/x/net/websocket"
 	"time"

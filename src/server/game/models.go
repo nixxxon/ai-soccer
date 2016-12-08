@@ -1,11 +1,17 @@
 package game
 
 type Position struct {
-    X int
-    Y int
+	X int
+	Y int
 }
 
 type Pawn struct {
-    Position Position
+	Id int
+	Position Position
+	Team int
+}
+
+type Ball struct {
+	Position Position
 }
 
