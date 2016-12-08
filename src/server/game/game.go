@@ -6,9 +6,10 @@ import (
 )
 
 type Game struct {
-	Pawns []Pawn    `json:"doods"`
-	Frame int
-	Id    int
+	Pawns []Pawn    `json:"pawns"`
+	Ball  Ball	`json:"ball"`
+	Frame int	`json:"frame"`
+	Id    int	`json:"id"`
 }
 
 const NUM_PAWNS int = 8
