@@ -28,7 +28,7 @@ func CreateGame() Game {
 		pawns = append(pawns, newPawn)
 	}
 
-	game := Game{pawns, 15000, 55}
+	game := Game{pawns, Ball{Position{0, 0}}, 15000, 55}
 	return game
 }
 
@@ -55,5 +55,7 @@ func (this *Game) MirrorCopy() *Game {
 		mirrorPawns = append([]Pawn{mirrorPawn}, mirrorPawns...)
 	}
 
-	return &Game{mirrorPawns, this.Frame, this.Id}
+	mirrorBall := Ball{Position{-this.Ball.Position.X, -this.Ball.Position.Y}}
+
+	return &Game{mirrorPawns, mirrorBall, this.Frame, this.Id}
 }
