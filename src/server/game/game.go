@@ -20,9 +20,9 @@ func CreateGame() Game {
 		var position Position
 		var team int = i/(NUM_PAWNS/2)
 		if( i<4 ) {
-			position = Position{-6 + 4*i, -10}
+			position = Position{float64(-6 + 4*i), -10}
 		} else {
-			position = Position{-6 + 4*i, +10}
+			position = Position{float64(-6 + 4*i), +10}
 		}
 		newPawn := Pawn{Id:i, Position:position, Team:team}
 		pawns = append(pawns, newPawn)
@@ -38,6 +38,10 @@ func (this *Game) Tick(commands []PawnCommand) {
 	fmt.Print("|")
 	this.Frame = this.Frame + 1
 	this.Pawns[0].Position.X = this.Pawns[0].Position.X + 2
+
+	for _, command := range commands {
+		command.ApplyTo(&this.Pawns[command.GetPawnId()])
+	}
 }
 
 func (this *Game) ToJsonState() []byte {
@@ -50,7 +54,7 @@ func (this *Game) MirrorCopy() *Game {
 	for _, pawn := range this.Pawns {
 		mirrorPos := Position{-pawn.Position.X, -pawn.Position.Y}
 		mirrorTeam := (pawn.Team+1)%2
-		mirrorId := NUM_PAWNS - pawn.Id
+		mirrorId := NUM_PAWNS - 1 - pawn.Id
 		mirrorPawn := Pawn{Id:mirrorId, Position:mirrorPos, Team:mirrorTeam}
 		mirrorPawns = append([]Pawn{mirrorPawn}, mirrorPawns...)
 	}

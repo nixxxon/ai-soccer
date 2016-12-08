@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"golang.org/x/net/websocket"
 	"time"
+	"math"
 )
 
 type Connection interface {
@@ -92,5 +93,11 @@ func (this EmptyConnection) SendState(state []byte) {}
 func (this EmptyConnection) Disconnect() {}
 
 func (this EmptyConnection) GetCommands() ([]game.PawnCommand) {
-	return []game.PawnCommand{}
+	commands := []game.PawnCommand{}
+	commands = append(commands, game.MoveCommand{Direction:-math.Pi/4, PawnId:0})
+	commands = append(commands, game.MoveCommand{Direction:0, PawnId:1})
+	commands = append(commands, game.MoveCommand{Direction:math.Pi, PawnId:2})
+	commands = append(commands, game.MoveCommand{Direction:math.Pi/4, PawnId:3})
+
+	return commands
 }

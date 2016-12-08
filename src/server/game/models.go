@@ -1,8 +1,8 @@
 package game
 
 type Position struct {
-	X int	`json:"x"`
-	Y int	`json:"y"`
+	X float64	`json:"x"`
+	Y float64	`json:"y"`
 }
 
 type Pawn struct {
