@@ -2,3 +2,4 @@
 !/bin/static
 /pkg
 /.idea
+/src/golang.org
