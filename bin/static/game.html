@@ -1,45 +1,86 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
 <html>
-    <head>
-    </head>
-    <body>
-        <div id="sse">
-        <a href="javascript:WebSocketTest()">Run WebSocket</a>
-        </div>
-
-
-        <script type="text/javascript">
+<head>
+    <title>AI bots</title>
+    <link href="../_shared/demo.css" rel="stylesheet" type="text/css">
+    <script src="http://code.createjs.com/easeljs-0.7.0.min.js"></script>
+    <script src="https://code.createjs.com/tweenjs-0.6.2.min.js"></script>
+    <script>
+        function init() {
             connect();
+        }
 
-            function connect() {
-                if (!('WebSocket' in window)) {
-                    alert('WebSocket is not supported by your Browser!');
-                    return;
+        function connect() {
+            if (!('WebSocket' in window)) {
+                alert('WebSocket is not supported by your Browser!');
+                return;
+            }
+
+            var ws = new WebSocket('ws://localhost:3000/lobby');
+            var $map = document.getElementById('map');
+            var stage = new createjs.Stage($map);
+            createjs.Ticker.setFPS(60);
+            createjs.Ticker.addEventListener("tick", stage);
+            var pawns = [];
+
+            ws.onopen = function() {
+                ws.send(JSON.stringify({
+                    role : "spectator",
+                    game_id : 55
+                }));
+                console.log('Message sent');
+            };
+
+            ws.onmessage = function (evt) {
+                var data = JSON.parse(evt.data);
+                // console.log(data);
+
+                if (!data) {
+                    return false;
                 }
 
-                var ws = new WebSocket('ws://localhost:3000/lobby');
+                for (var i = 0; i < data.pawns.length; i++) {
+                    var pawn = data.pawns[i];
 
-                ws.onopen = function() {
-                    // Web Socket is connected, send data using send()
-                    ws.send(JSON.stringify({
-                        role : "spectator",
-                        game_id : 55
-                    }));
-                    alert("Message is sent...");
-                };
+                    if (pawns && typeof pawns[i] !== 'undefined') {
+                        _pawn = pawns[i];
+                    } else {
+                        var _pawn = new createjs.Shape();
+                        var color = 'red';
+                        if (pawn.team == 1) {
+                            color = 'blue';
+                        }
+                        _pawn.graphics.beginFill(color).drawCircle(0, 0, 4);
+                        pawns.push(_pawn)
+                        stage.addChild(_pawn);
+                    }
 
-                ws.onmessage = function (evt) {
-                    var received_msg = evt.data;
-                    console.log(received_msg);
-                    ws.send("Ping back");
-                    return false;
-                };
 
-                ws.onclose = function() {
-                    // websocket is closed.
-                    alert("Connection is closed...");
-                };
-            }
-        </script>
-    </body>
+                    createjs.Tween.get(_pawn, { loop: false })
+                        .to({
+                            x: pawn.position.y * 10 + $map.width / 2,
+                            y: pawn.position.x * 10 + $map.height / 2
+                        }, 1000, createjs.Ease.getPowOut(4))
+                }
+
+                ws.send("Ping back");
+
+                return false;
+            };
+
+            ws.onclose = function() {
+                // websocket is closed.
+                // alert("Connection is closed...");
+                console.log('Connection closed');
+            };
+        }
+
+    </script>
+</head>
+<body onload="init();">
+    <canvas id="map" width="800" height="500">
+        alternate content
+    </canvas>
+</body>
 </html>
+

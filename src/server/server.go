@@ -50,7 +50,7 @@ func main() {
     fmt.Println("Launching servers...")
 
     http.Handle("/", http.FileServer(http.Dir(filepath.Join(dir, "static"))))
-    go http.ListenAndServe(":80", nil)
+    go http.ListenAndServe(":8000", nil)
 
     fmt.Println("Listening...")
 
