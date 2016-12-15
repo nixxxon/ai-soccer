@@ -6,8 +6,79 @@
     <script src="http://code.createjs.com/easeljs-0.7.0.min.js"></script>
     <script src="https://code.createjs.com/tweenjs-0.6.2.min.js"></script>
     <script>
+
+        var $map;
+        var stage;
+        var pawns;
+        var ball;
+        var started = false;
+
         function init() {
+            $map = document.getElementById('map');
+            stage = new createjs.Stage($map);
+            createjs.Ticker.setFPS(60);
+            createjs.Ticker.addEventListener('tick', stage);
+
             connect();
+        }
+
+        function startGame(data) {
+            console.log('startGame', data);
+
+            // Create map
+
+            addBall(data.ball);
+            addPawns(data.pawns);
+            started = true;
+        }
+
+        function addBall(data) {
+            console.log('addBall', data);
+
+            ball = new createjs.Shape();
+            ball.graphics.beginFill('black').drawCircle(0, 0, 4);
+            ball.x = data.position.y * 10 + $map.width / 2;
+            ball.y = data.position.x * 10 + $map.height / 2;
+            stage.addChild(ball);
+        }
+
+        function addPawns(data) {
+            console.log('addPawns', data);
+
+            pawns = [];
+            for (var i = 0; i < data.length; i++) {
+                var pawn = new createjs.Shape();
+                var color = 'red';
+                if (data[i].team == 1) {
+                    color = 'blue';
+                }
+                pawn.graphics.beginFill(color).drawCircle(0, 0, 4);
+                pawn.x = data[i].position.y * 10 + $map.width / 2;
+                pawn.y = data[i].position.x * 10 + $map.height / 2;
+                pawns.push(pawn)
+                stage.addChild(pawn);
+            }
+        }
+
+        function updatePositions(data) {
+            // Ball
+            updatePosition(ball, data.ball.position);
+
+            // Pawns
+            for (var i = 0; i < pawns.length; i++) {
+                updatePosition(pawns[i], data.pawns[i].position);
+            }
+        }
+
+        function updatePosition(object, position) {
+            console.log('updatePosition', object, position);
+
+            createjs.Tween.get(object, { loop: false })
+                .to({
+                    x: position.y * 10 + $map.width / 2,
+                    y: position.x * 10 + $map.height / 2
+                }, 1000, createjs.Ease.getPowOut(1)
+            );
         }
 
         function connect() {
@@ -17,15 +88,10 @@
             }
 
             var ws = new WebSocket('ws://localhost:3000/lobby');
-            var $map = document.getElementById('map');
-            var stage = new createjs.Stage($map);
-            createjs.Ticker.setFPS(60);
-            createjs.Ticker.addEventListener("tick", stage);
-            var pawns = [];
 
             ws.onopen = function() {
                 ws.send(JSON.stringify({
-                    role : "spectator",
+                    role : 'spectator',
                     game_id : 55
                 }));
                 console.log('Message sent');
@@ -33,38 +99,17 @@
 
             ws.onmessage = function (evt) {
                 var data = JSON.parse(evt.data);
-                // console.log(data);
 
                 if (!data) {
                     return false;
                 }
 
-                for (var i = 0; i < data.pawns.length; i++) {
-                    var pawn = data.pawns[i];
-
-                    if (pawns && typeof pawns[i] !== 'undefined') {
-                        _pawn = pawns[i];
-                    } else {
-                        var _pawn = new createjs.Shape();
-                        var color = 'red';
-                        if (pawn.team == 1) {
-                            color = 'blue';
-                        }
-                        _pawn.graphics.beginFill(color).drawCircle(0, 0, 4);
-                        pawns.push(_pawn)
-                        stage.addChild(_pawn);
-                    }
-
-
-                    createjs.Tween.get(_pawn, { loop: false })
-                        .to({
-                            x: pawn.position.y * 10 + $map.width / 2,
-                            y: pawn.position.x * 10 + $map.height / 2
-                        }, 1000, createjs.Ease.getPowOut(4))
+                if (!started) {
+                    startGame(data);
                 }
+                updatePositions(data);
 
                 ws.send("Ping back");
-
                 return false;
             };
 
