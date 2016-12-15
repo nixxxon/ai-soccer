@@ -10,6 +10,8 @@ type Game struct {
 	Ball  Ball	`json:"ball"`
 	Frame int	`json:"frame"`
 	Id    int	`json:"id"`
+	Map	Map	`json:"map"`
+	TickMs int	`json:"tick_ms"`
 }
 
 const NUM_PAWNS int = 8
@@ -22,13 +24,13 @@ func CreateGame() Game {
 		if( i<4 ) {
 			position = Position{float64(-6 + 4*i), -10}
 		} else {
-			position = Position{float64(-6 + 4*i), +10}
+			position = Position{float64(-6 + 4*i - 16), +10}
 		}
 		newPawn := Pawn{Id:i, Position:position, Team:team}
 		pawns = append(pawns, newPawn)
 	}
 
-	game := Game{pawns, Ball{Position{0, 0}}, 15000, 55}
+	game := Game{pawns, Ball{Position{0, 0}}, 15000, 55, DefaultMap(), 1000}
 	return game
 }
 
@@ -61,5 +63,5 @@ func (this *Game) MirrorCopy() *Game {
 
 	mirrorBall := Ball{Position{-this.Ball.Position.X, -this.Ball.Position.Y}}
 
-	return &Game{mirrorPawns, mirrorBall, this.Frame, this.Id}
+	return &Game{mirrorPawns, mirrorBall, this.Frame, this.Id, DefaultMap(), 1000}
 }

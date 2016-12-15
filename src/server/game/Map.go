@@ -18,11 +18,11 @@ type Rectangle struct {
 
 func DefaultMap() Map {
 	walls := []Rectangle{}
-	walls = append(walls, Rectangle{5, 5, -10, 1})
-	walls = append(walls, Rectangle{-5, -5, 10, -1})
+	walls = append(walls, Rectangle{-10, -15, -1, 30})
+	walls = append(walls, Rectangle{10, 15, 1, -30})
 	goals := []Rectangle{}
-	goals = append(goals, Rectangle{-2, -10, 4, -1})
-	goals = append(goals, Rectangle{-2, 10, 4, 1})
+	goals = append(goals, Rectangle{-2, -15, 4, -1})
+	goals = append(goals, Rectangle{2, 15, -4, 1})
 
 	default_map := Map{walls, goals}
 

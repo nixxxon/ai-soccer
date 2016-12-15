@@ -5,7 +5,6 @@ import (
 	"server/game"
 	"fmt"
 	"strconv"
-	"encoding/json"
 )
 
 type Coreographer struct {
@@ -46,8 +45,8 @@ func (this *Coreographer) AddSpectator(spectator Connection) {
 	this.Spectators = append(this.Spectators, spectator)
 	fmt.Printf("added spec")
 
-	handshake := ServerHandshake{GameId:55, TickMs:1000, WelcomeMessage:"Hello mr spectator to this lovely game!", StaticMap:game.DefaultMap()}
-	jsonHandshake, _ := json.Marshal(handshake)
-	spectator.SendHandshake(jsonHandshake)
+	//handshake := ServerHandshake{GameId:55, TickMs:1000, WelcomeMessage:"Hello mr spectator to this lovely game!", StaticMap:game.DefaultMap()}
+	//jsonHandshake, _ := json.Marshal(handshake)
+	//spectator.SendHandshake(jsonHandshake)
 }
 
