@@ -1,6 +1,6 @@
 package network
 
-type Handshake struct {
+type ClientHandshake struct {
 	Role string	`json:"role"`
 	GameId int	`json:"game_id"`
 }

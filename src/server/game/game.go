@@ -37,7 +37,7 @@ func (this *Game) Tick(commands []PawnCommand) {
 	//fmt.Print(printableState + "\n\n")
 	fmt.Print("|")
 	this.Frame = this.Frame + 1
-	this.Pawns[0].Position.X = this.Pawns[0].Position.X + 2
+	//this.Pawns[0].Position.X = this.Pawns[0].Position.X + 2
 
 	for _, command := range commands {
 		command.ApplyTo(this)

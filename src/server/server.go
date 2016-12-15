@@ -8,10 +8,8 @@ import "os"
 import "golang.org/x/net/websocket"
 import (
     "path/filepath"
-    //"./network"
     "server/game"
     "server/network"
-    "time"
     "encoding/json"
     "strconv"
 )
@@ -114,7 +112,7 @@ func webHandler(ws *websocket.Conn) {
     }
 
     fmt.Println(string(firstMessage))
-    handshake := network.Handshake{}
+    handshake := network.ClientHandshake{}
     json.Unmarshal(firstMessage, &handshake)
 
     if(handshake.Role == "spectator") {
@@ -161,18 +159,4 @@ func startNewGame() {
 
     coreographers = append(coreographers, &coreographer)
     //go network.RunGame(connections[0], connections[1], networkGame)
-}
-
-func bombard(ws *websocket.Conn) {
-    var in []byte
-    for {
-        websocket.Message.Send(ws, "Na")
-        time.Sleep(1*time.Second)
-
-        if err := websocket.Message.Receive(ws, &in); err != nil {
-            fmt.Printf("Disconnect")
-            return
-        }
-        fmt.Printf("Batman")
-    }
 }

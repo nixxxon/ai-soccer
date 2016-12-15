@@ -12,6 +12,7 @@ import (
 
 type Connection interface {
 	SendState([]byte)
+	SendHandshake([]byte)
 	Disconnect()
 	Listen()
 	GetCommands() ([]game.PawnCommand)
@@ -42,8 +43,12 @@ func NewConnection(websocket *websocket.Conn) Connection {
 
 func (connection PlayerConnection) SendState(state []byte) {
 	connection.conn.Write(state)
-	fmt.Printf(string(state))
-	fmt.Printf("DDSA")
+	fmt.Println(string(state))
+}
+
+func (connection PlayerConnection) SendHandshake(handshake []byte) {
+	connection.conn.Write(handshake)
+	fmt.Println(string(handshake))
 }
 
 //func listenToConnection(conn Connection) {
@@ -56,14 +61,13 @@ func (connection PlayerConnection) SendState(state []byte) {
 func (this PlayerConnection) Listen() {
 	var in []byte
 	for {
-		websocket.Message.Send(this.conn, "Na")
 		time.Sleep(1*time.Second)
 
 		if err := websocket.Message.Receive(this.conn, &in); err != nil {
 			this.onDisconnect()
+			fmt.Println("Client disconnected by sending bad websocket")
 			return
 		}
-		fmt.Printf("Batman")
 	}
 	for {
 		message, _ := bufio.NewReader(this.conn).ReadString('\n')
@@ -89,6 +93,8 @@ func (this PlayerConnection) GetCommands() ([]game.PawnCommand) {
 func (this EmptyConnection) Listen() {}
 
 func (this EmptyConnection) SendState(state []byte) {}
+
+func (this EmptyConnection) SendHandshake(handshake []byte) {}
 
 func (this EmptyConnection) Disconnect() {}
 
