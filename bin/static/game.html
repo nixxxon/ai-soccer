@@ -11,7 +11,7 @@
         var stage;
         var pawns;
         var ball;
-        var started = false;
+        var created = false;
 
         function init() {
             $map = document.getElementById('map');
@@ -22,14 +22,14 @@
             connect();
         }
 
-        function startGame(data) {
-            console.log('startGame', data);
+        function createMap(data) {
+            console.log('createMap', data);
 
             // Create map
 
             addBall(data.ball);
             addPawns(data.pawns);
-            started = true;
+            created = true;
         }
 
         function addBall(data) {
@@ -82,6 +82,8 @@
         }
 
         function connect() {
+            console.log('connect');
+
             if (!('WebSocket' in window)) {
                 alert('WebSocket is not supported by your Browser!');
                 return;
@@ -90,33 +92,34 @@
             var ws = new WebSocket('ws://localhost:3000/lobby');
 
             ws.onopen = function() {
+                console.log('ws.onopen');
+
                 ws.send(JSON.stringify({
                     role : 'spectator',
                     game_id : 55
                 }));
-                console.log('Message sent');
             };
 
             ws.onmessage = function (evt) {
+                console.log('ws.onmessage', evt);
+
                 var data = JSON.parse(evt.data);
 
                 if (!data) {
                     return false;
                 }
 
-                if (!started) {
-                    startGame(data);
+                if (!created) {
+                    createMap(data);
                 }
                 updatePositions(data);
 
-                ws.send("Ping back");
+                ws.send('Ping back');
                 return false;
             };
 
             ws.onclose = function() {
-                // websocket is closed.
-                // alert("Connection is closed...");
-                console.log('Connection closed');
+                console.log('ws.onclose');
             };
         }
 
