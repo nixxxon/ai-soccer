@@ -16,7 +16,7 @@ type Game struct {
 
 const NUM_PAWNS int = 8
 
-func CreateGame() Game {
+func CreateGame(gameId int) Game {
 	var pawns []Pawn = []Pawn{}
 	for i:=0; i< NUM_PAWNS; i++ {
 		var position Position
@@ -30,7 +30,7 @@ func CreateGame() Game {
 		pawns = append(pawns, newPawn)
 	}
 
-	game := Game{pawns, Ball{Position{0, 0}}, 15000, 55, DefaultMap(), 1000}
+	game := Game{pawns, Ball{Position{0, 0}}, 15000, gameId, DefaultMap(), 1000}
 	return game
 }
 

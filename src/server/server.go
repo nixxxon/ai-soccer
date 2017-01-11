@@ -99,8 +99,8 @@ func startDummyGame() {
     fmt.Println("Starting dummy game")
     conn1 := network.MakeEmptyConnection()
     conn2 := network.MakeEmptyConnection()
-    delegateNewConnection(conn1)
-    delegateNewConnection(conn2)
+    delegateNewConnection(conn1, 55)
+    delegateNewConnection(conn2, 55)
 }
 
 func webHandler(ws *websocket.Conn) {
@@ -118,11 +118,11 @@ func webHandler(ws *websocket.Conn) {
     if(handshake.Role == "spectator") {
         delegateNewSpectator(connection, handshake.GameId)
     } else {
-        delegateNewConnection(connection)
+        delegateNewConnection(connection, handshake.GameId)
         if handshake.GameId >= 10000 {
             fmt.Println("Adding an extra dummy opponent")
             conn2 := network.MakeEmptyConnection()
-            delegateNewConnection(conn2)
+            delegateNewConnection(conn2, handshake.GameId)
         }
     }
 
@@ -144,16 +144,16 @@ func delegateNewSpectator(connection network.Connection, requestedGameId int) {
     connection.Disconnect()
 }
 
-func delegateNewConnection(connection network.Connection) {
+func delegateNewConnection(connection network.Connection, requestedGameId int) {
     fmt.Println("Welcome Player!")
     connections = append(connections, connection)
     if (len(connections) >= 2) {
-        startNewGame()
+        startNewGame(requestedGameId)
     }
 }
 
-func startNewGame() {
-    networkGame := game.CreateGame()
+func startNewGame(gameId int) {
+    networkGame := game.CreateGame(gameId)
 
     conn1 := connections[0]
     conn2 := connections[1]
