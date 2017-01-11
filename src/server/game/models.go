@@ -24,5 +24,5 @@ func (pawn *Pawn) canKick(ball *Ball) bool {
 func (position Vector) distanceTo(otherPosition Vector) float64 {
 	deltaX := position.X - otherPosition.X
 	deltaY := position.Y - otherPosition.Y
-	return math.Sqrt(deltaX*deltaX + deltaY + deltaY)
+	return math.Sqrt(deltaX*deltaX + deltaY*deltaY)
 }

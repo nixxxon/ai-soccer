@@ -4,7 +4,6 @@ import "time"
 import (
 	"server/game"
 	"fmt"
-	"strconv"
 )
 
 type Coreographer struct {
@@ -34,7 +33,7 @@ func (this *Coreographer) postState() {
 
 	this.Ai2.SendState(this.Game.MirrorCopy().ToJsonState())
 
-	fmt.Print(strconv.Itoa(len(this.Spectators)))
+	//fmt.Println(strconv.Itoa(len(this.Spectators)))
 
 	for _, spectator := range this.Spectators {
 		spectator.SendState(this.Game.MirrorCopy().ToJsonState())

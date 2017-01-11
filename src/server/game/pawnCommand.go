@@ -2,7 +2,7 @@ package game
 
 import "math"
 
-const runspeed float64 = 0.2
+const runspeed float64 = 1.0
 
 type PawnCommand interface {
 	ApplyTo(game *Game)

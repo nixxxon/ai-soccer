@@ -37,7 +37,8 @@ func CreateGame(gameId int) Game {
 func (this *Game) Tick(commands []PawnCommand) {
 	//printableState := string(this.ToJsonState())//strconv.Itoa(this.Frame)
 	//fmt.Print(printableState + "\n\n")
-	fmt.Print("|")
+	ballJson, _ := json.Marshal(this.Ball.Position)
+	fmt.Println("Ball at " + string(ballJson[:]))
 	this.Frame = this.Frame + 1
 	//this.Pawns[0].Position.X = this.Pawns[0].Position.X + 2
 
