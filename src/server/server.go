@@ -119,6 +119,11 @@ func webHandler(ws *websocket.Conn) {
         delegateNewSpectator(connection, handshake.GameId)
     } else {
         delegateNewConnection(connection)
+        if handshake.GameId >= 10000 {
+            fmt.Println("Adding an extra dummy opponent")
+            conn2 := network.MakeEmptyConnection()
+            delegateNewConnection(conn2)
+        }
     }
 
     connection.Listen()

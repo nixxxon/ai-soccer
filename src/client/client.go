@@ -1,9 +1,7 @@
 package main
 
-import "net"
 import "fmt"
 import (
-    "bufio"
     "encoding/json"
     "server/network"
 )
@@ -21,7 +19,7 @@ func main() {
         return
     }
     fmt.Print("Connected")
-    handshake, _ := json.Marshal(network.ClientHandshake{GameId:50, Role:"player"})
+    handshake, _ := json.Marshal(network.ClientHandshake{GameId:10000, Role:"player"})
     response, _ := conn.Write(handshake)
     fmt.Print(response)
     fmt.Print("fdas")
