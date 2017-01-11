@@ -12,6 +12,7 @@
         var pawns;
         var ball;
         var created = false;
+        var scaling = 20;
 
         function init() {
             $map = document.getElementById('map');
@@ -25,11 +26,80 @@
         function createMap(data) {
             console.log('createMap', data);
 
-            // Create map
-
+            addMap(data.map);
             addBall(data.ball);
             addPawns(data.pawns);
             created = true;
+        }
+
+        function addMap(data) {
+            console.log('addMap', data);
+
+            $map.style.background = 'url(https://thumbs.dreamstime.com/t/seamlessly-green-grass-texture-background-all-field-activities-just-like-game-baseball-football-soccer-outdoor-events-57737935.jpg) green';
+            $map.style.backgroundSize = '30%';
+            addWalls(data.walls);
+            addGoals(data.goals);
+        }
+
+        function addWalls(data) {
+            console.log('addWalls', data);
+
+            for (var i = 0; i < data.length; i++) {
+                addWall(data[i]);
+            }
+        }
+
+        function addWall(data) {
+            console.log('addWall', data);
+
+            addRect(
+                {
+                    x: data.x,
+                    y: data.y
+                },
+                {
+                    x: data.width,
+                    y: data.height
+                },
+                'gray'
+            );
+        }
+
+        function addGoals(data) {
+            console.log('addGoals', data);
+
+            for (var i = 0; i < data.length; i++) {
+                addGoal(data[i]);
+            }
+        }
+
+        function addGoal(data) {
+            console.log('addGoal', data);
+
+            addRect(
+                {
+                    x: data.x,
+                    y: data.y
+                },
+                {
+                    x: data.width,
+                    y: data.height
+                },
+                'orange'
+            );
+        }
+
+        function addRect(location, size, color) {
+            var rect = new createjs.Shape();
+            rect.graphics.beginFill(color).drawRect(
+                0,
+                0,
+                size.y * scaling,
+                size.x * scaling
+            );
+            rect.x = location.y * scaling + $map.width / 2;
+            rect.y = location.x * scaling + $map.height / 2;
+            stage.addChild(rect);
         }
 
         function addBall(data) {
@@ -37,8 +107,8 @@
 
             ball = new createjs.Shape();
             ball.graphics.beginFill('black').drawCircle(0, 0, 4);
-            ball.x = data.position.y * 10 + $map.width / 2;
-            ball.y = data.position.x * 10 + $map.height / 2;
+            ball.x = data.position.y * scaling + $map.width / 2;
+            ball.y = data.position.x * scaling + $map.height / 2;
             stage.addChild(ball);
         }
 
@@ -53,8 +123,8 @@
                     color = 'blue';
                 }
                 pawn.graphics.beginFill(color).drawCircle(0, 0, 4);
-                pawn.x = data[i].position.y * 10 + $map.width / 2;
-                pawn.y = data[i].position.x * 10 + $map.height / 2;
+                pawn.x = data[i].position.y * scaling + $map.width / 2;
+                pawn.y = data[i].position.x * scaling + $map.height / 2;
                 pawns.push(pawn)
                 stage.addChild(pawn);
             }
@@ -75,8 +145,8 @@
 
             createjs.Tween.get(object, { loop: false })
                 .to({
-                    x: position.y * 10 + $map.width / 2,
-                    y: position.x * 10 + $map.height / 2
+                    x: position.y * scaling + $map.width / 2,
+                    y: position.x * scaling + $map.height / 2
                 }, 1000, createjs.Ease.getPowOut(1)
             );
         }
