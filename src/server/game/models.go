@@ -10,6 +10,7 @@ type Vector struct {
 type Pawn struct {
 	Id       int    `json:"id"`
 	Position Vector `json:"position"`
+	Stamina	float64	`json:"stamina"`
 	Team     int    `json:"team"`
 }
 

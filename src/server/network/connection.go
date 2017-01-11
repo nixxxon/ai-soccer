@@ -8,7 +8,6 @@ import (
 	"golang.org/x/net/websocket"
 	"time"
 	"math"
-	"math/rand"
 )
 
 type Connection interface {
@@ -107,9 +106,9 @@ func (this EmptyConnection) GetCommands() ([]game.PawnCommand) {
 	commands = append(commands, game.MoveCommand{Direction:0, PawnId:1})
 	commands = append(commands, game.MoveCommand{Direction:math.Pi, PawnId:2})
 
-	if( rand.Intn(3) != 0) {
+	//if( rand.Intn(3) != 0) {
 		commands = append(commands, game.MoveCommand{Direction:math.Pi/2 + math.Pi*0.18, PawnId:3})
-	}
+	//}
 
 	commands = append(commands, game.KickBallCommand{Direction:math.Pi/2, PawnId:3, Force:4})
 

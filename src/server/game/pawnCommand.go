@@ -19,8 +19,8 @@ type MoveCommand struct {
 
 func (command MoveCommand) ApplyTo(game *Game) {
 	pawn := &game.Pawns[command.PawnId]
-	pawn.Position.X = pawn.Position.X + runspeed*math.Cos(command.Direction)
-	pawn.Position.Y = pawn.Position.Y + runspeed*math.Sin(command.Direction)
+	pawn.Position.X = pawn.Position.X + runspeed*pawn.Stamina*math.Cos(command.Direction)
+	pawn.Position.Y = pawn.Position.Y + runspeed*pawn.Stamina*math.Sin(command.Direction)
 }
 
 func (command MoveCommand) Type() string {

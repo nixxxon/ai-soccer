@@ -26,7 +26,7 @@ func CreateGame(gameId int) Game {
 		} else {
 			position = Vector{float64(-6 + 4*i - 16), +10}
 		}
-		newPawn := Pawn{Id: i, Position: position, Team: team}
+		newPawn := Pawn{Id: i, Stamina:1.0 - float64(i)*0.1, Position: position, Team: team}
 		pawns = append(pawns, newPawn)
 	}
 
