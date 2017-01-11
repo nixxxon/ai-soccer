@@ -52,17 +52,7 @@
         function addWall(data) {
             console.log('addWall', data);
 
-            addRect(
-                {
-                    x: data.x,
-                    y: data.y
-                },
-                {
-                    x: data.width,
-                    y: data.height
-                },
-                'gray'
-            );
+            addRect(data.position, data.size, 'gray');
         }
 
         function addGoals(data) {
@@ -76,17 +66,7 @@
         function addGoal(data) {
             console.log('addGoal', data);
 
-            addRect(
-                {
-                    x: data.x,
-                    y: data.y
-                },
-                {
-                    x: data.width,
-                    y: data.height
-                },
-                'orange'
-            );
+            addRect(data.position, data.size, 'orange');
         }
 
         function addRect(location, size, color) {

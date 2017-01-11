@@ -5,24 +5,28 @@ type MapElement interface {
 }
 
 type Map struct {
-	Walls []Rectangle	`json:"walls"`
-	Goals []Rectangle	`json:"goals"`
+	Walls []Rectangle `json:"walls"`
+	Goals []Rectangle `json:"goals"`
 }
 
 type Rectangle struct {
-	X int		`json:"x"`
-	Y int		`json:"y"`
-	Width int	`json:"width"`
-	Height int	`json:"height"`
+	Position Vector `json:"position"`
+	Size     Vector `json:"size"`
 }
 
 func DefaultMap() Map {
+
 	walls := []Rectangle{}
-	walls = append(walls, Rectangle{-10, -15, -1, 30})
-	walls = append(walls, Rectangle{10, 15, 1, -30})
+	walls = append(walls, Rectangle{Position: Vector{X: -10, Y: -15}, Size: Vector{X: -1, Y: 30}})
+	walls = append(walls, Rectangle{Position: Vector{X: 10, Y: 15}, Size: Vector{X: 1, Y: -30}})
+	walls = append(walls, Rectangle{Position: Vector{X: -11, Y: -15}, Size: Vector{X: 9, Y: -1}})
+	walls = append(walls, Rectangle{Position: Vector{X: 11, Y: -15}, Size: Vector{X: -9, Y: -1}})
+	walls = append(walls, Rectangle{Position: Vector{X: -11, Y: 15}, Size: Vector{X: 9, Y: 1}})
+	walls = append(walls, Rectangle{Position: Vector{X: 11, Y: 15}, Size: Vector{X: -9, Y: 1}})
+
 	goals := []Rectangle{}
-	goals = append(goals, Rectangle{-2, -15, 4, -1})
-	goals = append(goals, Rectangle{2, 15, -4, 1})
+	goals = append(goals, Rectangle{Position: Vector{X: -2, Y: -15}, Size: Vector{X: 4, Y: -1}})
+	goals = append(goals, Rectangle{Position: Vector{X: 2, Y: 15}, Size: Vector{X: -4, Y: 1}})
 
 	default_map := Map{walls, goals}
 
