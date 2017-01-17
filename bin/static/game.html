@@ -13,6 +13,9 @@
         var ball;
         var created = false;
         var scaling = 20;
+        var states = [];
+        var stamina_width = 2;
+        var stamina_height = 0.3;
 
         function init() {
             $map = document.getElementById('map');
@@ -97,28 +100,81 @@
 
             pawns = [];
             for (var i = 0; i < data.length; i++) {
-                var pawn = new createjs.Shape();
-                var color = 'red';
-                if (data[i].team == 1) {
-                    color = 'blue';
-                }
-                pawn.graphics.beginFill('grey').drawCircle(0, 0, scaling);
-                pawn.graphics.beginFill(color).drawCircle(0, 0, scaling/4)
-                pawn.x = data[i].position.y * scaling + $map.width / 2;
-                pawn.y = data[i].position.x * scaling + $map.height / 2;
-                pawns.push(pawn)
-                stage.addChild(pawn);
+                addPawn(data[i]);
             }
         }
 
-        function updatePositions(data) {
-            // Ball
-            updatePosition(ball, data.ball.position);
+        function addPawn(data) {
+            console.log('addPawn', data);
 
-            // Pawns
+            var pawn_container = new createjs.Container();
+
+            // Set location
+            pawn_container.x = data.position.y * scaling + $map.width / 2;
+            pawn_container.y = data.position.x * scaling + $map.height / 2;
+
+            // Add Pawn
+            var pawn = new createjs.Shape();
+            var color = 'red';
+            if (data.team == 1) {
+                color = 'blue';
+            }
+            pawn.graphics.beginFill('grey').drawCircle(0, 0, scaling);
+            pawn.graphics.beginFill(color).drawCircle(0, 0, scaling/4)
+            pawn_container.addChild(pawn);
+
+            // Add Stamina meter
+            var stamina_container = new createjs.Container();
+            stamina_container.x = -20;
+            stamina_container.y = -20;
+
+            var stamina_box = new createjs.Shape();
+            stamina_box.graphics.beginFill('white').drawRect(
+                0,
+                0,
+                stamina_width * scaling,
+                stamina_height * scaling
+            );
+            stamina_container.addChild(stamina_box);
+
+            var stamina_meter = new createjs.Shape();
+            stamina_meter.graphics.beginFill('green').drawRect(
+                0,
+                0,
+                (stamina_width - 0.2) * scaling,
+                (stamina_height - 0.2) * scaling
+            );
+
+            stamina_meter.x = (stamina_width - 0.2);
+            stamina_meter.y = stamina_height * 5;
+            stamina_container.addChild(stamina_meter);
+
+            pawn_container.addChild(stamina_container);
+
+            pawns.push(pawn_container)
+            stage.addChild(pawn_container);
+        }
+
+        function updateState(data) {
+            console.log('updateState', data);
+
+            updatePawns(data);
+            updateBall(data);
+        }
+
+        function updatePawns(data) {
+            console.log('updatePawns', data);
+
             for (var i = 0; i < pawns.length; i++) {
                 updatePosition(pawns[i], data.pawns[i].position);
+                updateStamina(pawns[i], data.pawns[i].stamina);
             }
+        }
+
+        function updateBall(data) {
+            console.log('updateBall', data);
+
+            updatePosition(ball, data.ball.position);
         }
 
         function updatePosition(object, position) {
@@ -129,6 +185,19 @@
                     x: position.y * scaling + $map.width / 2,
                     y: position.x * scaling + $map.height / 2
                 }, 1000, createjs.Ease.getPowOut(1)
+            );
+        }
+
+        function updateStamina(pawn, stamina) {
+            console.log('updateStamina', pawn, stamina);
+
+            var _stamina = pawn.children[1].children[1];
+
+            _stamina.graphics.clear().beginFill('green').drawRect(
+                0,
+                0,
+                stamina * (stamina_width - 0.2) * scaling,
+                (stamina_height - 0.2) * scaling
             );
         }
 
@@ -163,7 +232,14 @@
                 if (!created) {
                     createMap(data);
                 }
-                updatePositions(data);
+
+                states.push(data);
+
+                // Check if goal
+                    // Start replay
+
+                // If not replay
+                updateState(data);
 
                 ws.send('Ping back');
                 return false;
